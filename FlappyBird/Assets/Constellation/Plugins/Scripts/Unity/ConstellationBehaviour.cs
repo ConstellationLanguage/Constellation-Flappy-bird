@@ -4,9 +4,6 @@ using UnityEngine;
 namespace Constellation {
     public class ConstellationBehaviour : MonoBehaviour {
 
-        public List<IUpdatable> updatables;
-        public List<IAwakable> Awakables;
-        public List<ILateUpdatable> lateUpdatables;
         public List<ICollisionEnter> CollisionEnterListeners;
         public List<ICollisionStay> CollisionStayListeners;
         public List<ICollisionExit> CollisionExitListeners;
@@ -15,15 +12,17 @@ namespace Constellation {
         public ConstellationScript ConstellationData;
         public Constellation Constellation;
         public static ConstellationEventSystem eventSystem;
+        public static bool GarbageCollected = true;
         private NodesFactory nodeFactory;
 
         public void Awake () {
+            Application.targetFrameRate = 60;
             if (ConstellationBehaviour.eventSystem == null)
                 eventSystem = new ConstellationEventSystem ();
-            
-            if(NodesFactory.Current == null)
-                nodeFactory = new NodesFactory();
-            else 
+
+            if (NodesFactory.Current == null)
+                nodeFactory = new NodesFactory ();
+            else
                 nodeFactory = NodesFactory.Current;
 
             if (ConstellationData == null && Application.isPlaying) {
@@ -37,51 +36,49 @@ namespace Constellation {
 
             var links = ConstellationData.GetLinks ();
             foreach (LinkData link in links) {
-                Constellation.AddLink (new Link (Constellation.GetInput (link.Input.Guid),
-                    Constellation.GetOutput (link.Output.Guid),
-                    Constellation.GetOutput (link.Output.Guid).Type), "none");
+                var input = Constellation.GetInput (link.Input.Guid);
+                var output = Constellation.GetOutput (link.Output.Guid);
+                if (input != null && output != null)
+                    Constellation.AddLink (new Link (Constellation.GetInput (link.Input.Guid),
+                        Constellation.GetOutput (link.Output.Guid),
+                        Constellation.GetOutput (link.Output.Guid).Type), "none");
             }
-            SetUnityObject();
+            SetUnityObject ();
             SetConstellationEvents ();
-            foreach (var awakables in Awakables) {
-                awakables.OnAwake ();
-            }
+            Constellation.Initialize (System.Guid.NewGuid ().ToString (), ConstellationData.name);
+            Constellation.Awake ();
         }
 
         public void RefreshConstellationEvents () {
-            updatables = null;
-            Awakables = null;
-            lateUpdatables = null;
             CollisionEnterListeners = null;
             CollisionStayListeners = null;
             CollisionExitListeners = null;
             FixedUpdatables = null;
+            Constellation.RefreshConstellationEvents ();
             SetConstellationEvents ();
         }
 
         public void SetConstellationEvents () {
-            SetAwakables ();
-            SetUpdatables ();
-            SetLateUpdatables ();
+            Constellation.SetConstellationEvents ();
             SetCollisionEnter ();
             SetCollisionExit ();
             SetCollisionStay ();
             SetFixedUpdate ();
-            SetAttribute ();
         }
 
         public void RemoveLink (LinkData linkData) {
+            Link linkToRemove = null;
             foreach (var link in Constellation.Links) {
                 if (link.Input.Guid == linkData.Input.Guid && link.Output.Guid == linkData.Output.Guid) {
-                    Constellation.Links.Remove (link);
+                    linkToRemove = link;
                 }
             }
+            linkToRemove.OnDestroy ();
+            Constellation.Links.Remove (linkToRemove);
         }
 
         public void AddLink (LinkData link) {
-            Constellation.AddLink (new Link (Constellation.GetInput (link.Input.Guid),
-                Constellation.GetOutput (link.Output.Guid),
-                Constellation.GetOutput (link.Output.Guid).Type), "none");
+            Constellation.AddLink (link);
         }
 
         public void RemoveNode (NodeData node) {
@@ -142,7 +139,7 @@ namespace Constellation {
             var attributesCounter = 0;
             foreach (NodeData node in nodes) {
                 var newNode = nodeFactory.GetNode (node);
-                Constellation.AddNode (newNode, node.Guid);
+                Constellation.AddNode (newNode, node.Guid, node);
                 if (IsAttribute (node) && Attributes != null) {
                     IAttribute nodeAttribute = newNode.NodeType as IAttribute;
                     if (node.Name != "ObjectAttribute" && attributesCounter < Attributes.Count)
@@ -166,14 +163,6 @@ namespace Constellation {
                 return true;
 
             return false;
-        }
-
-        void SetAttribute () {
-
-        }
-
-        void Start () {
-
         }
 
         public void SetCollisionStay () {
@@ -212,28 +201,6 @@ namespace Constellation {
             }
         }
 
-        public void SetAwakables () {
-            if (Awakables == null)
-                Awakables = new List<IAwakable> ();
-
-            foreach (var node in Constellation.GetNodes ()) {
-                if (node.NodeType as IAwakable != null) {
-                    Awakables.Add (node.NodeType as IAwakable);
-                }
-            }
-        }
-
-        public void SetUpdatables () {
-            if (updatables == null)
-                updatables = new List<IUpdatable> ();
-
-            foreach (var node in Constellation.GetNodes ()) {
-                if (node.NodeType as IUpdatable != null) {
-                    updatables.Add (node.NodeType as IUpdatable);
-                }
-            }
-        }
-
         public void SetFixedUpdate () {
             if (FixedUpdatables == null)
                 FixedUpdatables = new List<IFixedUpdate> ();
@@ -258,41 +225,25 @@ namespace Constellation {
             }
         }
 
-        public void SetLateUpdatables () {
-            if (lateUpdatables == null)
-                lateUpdatables = new List<ILateUpdatable> ();
-
-            foreach (var node in Constellation.GetNodes ()) {
-                if (node.NodeType as ILateUpdatable != null) {
-                    lateUpdatables.Add (node.NodeType as ILateUpdatable);
-                }
-            }
-        }
-
         void Update () {
-            foreach (var updatable in updatables) {
-                updatable.OnUpdate ();
+            if (Time.frameCount % 1 == 0 && GarbageCollected == false) {
+                System.GC.Collect ();
+                GarbageCollected = true;
             }
+            Constellation.Update ();
         }
 
         void FixedUpdate () {
+            if (FixedUpdatables == null)
+                return;
             foreach (var updatable in FixedUpdatables) {
                 updatable.OnFixedUpdate ();
             }
         }
 
         void LateUpdate () {
-            foreach (var lateUpdatable in lateUpdatables) {
-                lateUpdatable.OnLateUpdate ();
-            }
-        }
-
-        public void SubscribeUpdate (IUpdatable _updatable) {
-            updatables.Add (_updatable);
-        }
-
-        public void RemoveUpdatable (IUpdatable _updatable) {
-            updatables.Remove (_updatable);
+            GarbageCollected = false;
+            Constellation.LateUpdate ();
         }
 
         public void Log (Variable value) {
