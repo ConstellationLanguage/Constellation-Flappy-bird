@@ -3,7 +3,6 @@ namespace Constellation.Unity
     public class Color : INode, IReceiver
     {
         public const string NAME = "Color";
-        public ConstellationBehaviour galaxy;
         private ISender sender;
         private Attribute valueR;
         private Attribute valueG;
@@ -11,7 +10,7 @@ namespace Constellation.Unity
         private Attribute valueA;
         private Variable Result;
 
-        public void Setup(INodeParameters _node, ILogger _logger)
+        public void Setup(INodeParameters _node)
         {
             _node.AddInput(this, true, "R");
             _node.AddInput(this, true, "G");

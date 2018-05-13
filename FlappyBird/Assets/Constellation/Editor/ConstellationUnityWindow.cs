@@ -1,4 +1,5 @@
-﻿using Constellation;
+﻿using System;
+using Constellation;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,13 +13,16 @@ namespace ConstellationEditor {
         private NodeSelectorPanel nodeSelector;
         private string currentPath;
         public static ConstellationUnityWindow WindowInstance;
-        private GameObject previousSelectedGameObject;
-        private ConstellationBehaviour currentConstellationbehavior;
         Constellation.Constellation constellation;
 
         [MenuItem ("Window/Constellation Editor")]
         public static void ShowWindow () {
             WindowInstance = EditorWindow.GetWindow (typeof (ConstellationUnityWindow), false, "Constellation") as ConstellationUnityWindow;
+        }
+
+        protected override void ShowEditorWindow()
+        {
+            ShowWindow();
         }
 
         void OnSceneLoaded (Scene scene, LoadSceneMode mode) {
@@ -100,11 +104,6 @@ namespace ConstellationEditor {
                 ShowWindow ();
         }
 
-        [MenuItem ("Help/Constellation tutorials")]
-        static void Help () {
-            Application.OpenURL ("https://github.com/ConstellationLanguage/Constellation/wiki");
-        }
-
         public void Undo () {
             scriptDataService.Undo ();
             RefreshNodeEditor ();
@@ -116,7 +115,7 @@ namespace ConstellationEditor {
         }
 
         public void Copy () {
-            scriptDataService.GetEditorData ().clipBoard.AddSelection (nodeEditorPanel.GetNodeSelection ().SelectedNodes.ToArray (), nodeEditorPanel.LinksView.GetLinks ());
+            scriptDataService.GetEditorData ().clipBoard.AddSelection (nodeEditorPanel.GetNodeSelection ().SelectedNodes.ToArray (), nodeEditorPanel.GetLinks ());
         }
 
         public void Paste () {
@@ -193,30 +192,40 @@ namespace ConstellationEditor {
         }
 
         void OnGUI () {
-            if (Event.current.type == EventType.Layout) {
-                canDrawUI = true;
-            }
-
-            //Used to hide and show buttons
-            if (Event.current.type == EventType.MouseMove) {
-                RequestRepaint ();
-            }
-
-            if (canDrawUI) {
-                if (IsConstellationSelected ()) {
-                    DrawGUI ();
-                } else if (!IsConstellationSelected ()) {
-                    DrawStartGUI ();
+            try {
+                if (Event.current.type == EventType.Layout) {
+                    canDrawUI = true;
                 }
-            } else {
-                GUI.Label (new Rect (0, 0, 500, 500), "Loading");
-                Repaint ();
+
+                if (Event.current.type == EventType.MouseMove) {
+                    RequestRepaint ();
+                }
+
+                if (canDrawUI) {
+                    if (IsConstellationSelected ()) {
+                        DrawGUI ();
+                    } else if (!IsConstellationSelected ()) {
+                        DrawStartGUI ();
+                    }
+                } else {
+                    GUI.Label (new Rect (0, 0, 500, 500), "Loading");
+                    Repaint ();
+                }
+            } catch (ConstellationError e) {
+                ShowError (e);
+            } catch {
+                var e = new UnknowError (this.GetType ().Name);
+                ShowError (e);
             }
         }
 
         protected virtual void DrawStartGUI () {
             StartPanel.Draw (this);
             Recover ();
+        }
+
+        protected void OnNodeAddRequested (string nodeName, string _namespace) {
+            nodeEditorPanel.AddNode (nodeName, _namespace);
         }
 
         protected virtual void DrawGUI () {
@@ -226,7 +235,7 @@ namespace ConstellationEditor {
                 Open (constellationName);
 
             var constellationToRemove = nodeTabPanel.ConstellationToRemove ();
-            scriptDataService.RemoveOpenedConstellation (constellationToRemove);
+            scriptDataService.CloseOpenedConstellation (constellationToRemove);
             if (constellationToRemove != "" && constellationToRemove != null) {
                 Recover ();
             }
@@ -241,8 +250,11 @@ namespace ConstellationEditor {
         }
 
         static void OnPlayStateChanged (PlayModeStateChange state) {
-            if (Application.isPlaying)
+            if (Application.isPlaying) {
+                ConstellationUnityWindow.ShowWindow ();
+                WindowInstance.Recover ();
                 WindowInstance.CompileScripts ();
+            }
 
             WindowInstance.Recover ();
             WindowInstance.previousSelectedGameObject = null;
@@ -254,55 +266,48 @@ namespace ConstellationEditor {
             }
 
             EditorApplication.playModeStateChanged -= OnPlayStateChanged;
+            WindowInstance.Repaint();
         }
 
         void Update () {
-            if (Application.isPlaying) {
-                RequestRepaint ();
-                if (nodeEditorPanel != null && previousSelectedGameObject != null && scriptDataService.GetCurrentScript ().IsInstance) {
-                    nodeEditorPanel.Update (currentConstellationbehavior.Constellation);
-                }
+            try {
+                if (Application.isPlaying && IsConstellationSelected ()) {
+                    RequestRepaint ();
+                    if (nodeEditorPanel != null && previousSelectedGameObject != null && scriptDataService.GetCurrentScript ().IsInstance) {
+                        nodeEditorPanel.Update (currentEditableConstellation.GetConstellation ());
+                    }
 
-                var selectedGameObjects = Selection.gameObjects;
-                if (selectedGameObjects.Length == 0 || selectedGameObjects[0] == previousSelectedGameObject)
-                    return;
+                    var selectedGameObjects = Selection.gameObjects;
+                    if (selectedGameObjects.Length == 0 || selectedGameObjects[0] == previousSelectedGameObject)
+                        return;
+                    else if (scriptDataService.GetCurrentScript ().IsInstance) {
+                        scriptDataService.CloseCurrentConstellationInstance ();
+                        previousSelectedGameObject = selectedGameObjects[0];
+                        Recover ();
+                    }
 
-                var selectedConstellation = selectedGameObjects[0].GetComponent<ConstellationBehaviour> () as ConstellationBehaviour;
-                if (selectedConstellation != null) {
-                    currentConstellationbehavior = selectedConstellation;
-                    previousSelectedGameObject = selectedGameObjects[0];
-                    OpenConstellationInstance (selectedConstellation.Constellation, AssetDatabase.GetAssetPath (selectedConstellation.ConstellationData));
+                    var selectedConstellation = selectedGameObjects[0].GetComponent<ConstellationEditable> () as ConstellationEditable;
+                    if (selectedConstellation != null) {
+                        currentEditableConstellation = selectedConstellation;
+                        previousSelectedGameObject = selectedGameObjects[0];
+                        OpenConstellationInstance (selectedConstellation.GetConstellation (), AssetDatabase.GetAssetPath (selectedConstellation.GetConstellationData()));
+                        if (selectedConstellation.GetConstellation() == null) {
+                            return;
+                        }
+                        selectedConstellation.Initialize ();
+                    }
                 }
+            } catch (ConstellationError e) {
+                ShowError (e);
+            } catch (Exception e) {
+                var unknowError = new UnknowError (this.GetType ().Name);
+                ShowError (unknowError, e);
             }
         }
 
-        private void OnLinkAdded (LinkData link) {
-            if (Application.isPlaying && previousSelectedGameObject != null)
-                currentConstellationbehavior.AddLink (link);
+        protected virtual void OnLostFocus () {
+            EditorApplication.playModeStateChanged -= OnPlayStateChanged;
+            EditorApplication.playModeStateChanged += OnPlayStateChanged;
         }
-
-        private void OnLinkRemoved (LinkData link) {
-            if (Application.isPlaying && previousSelectedGameObject != null)
-                currentConstellationbehavior.RemoveLink (link);
-        }
-
-        private void OnNodeAdded (NodeData node) {
-            if (Application.isPlaying && previousSelectedGameObject != null) {
-                currentConstellationbehavior.AddNode (node);
-                currentConstellationbehavior.RefreshConstellationEvents ();
-            }
-            Repaint ();
-        }
-
-        private void OnNodeRemoved (NodeData node) {
-            if (Application.isPlaying && previousSelectedGameObject)
-                currentConstellationbehavior.RemoveNode (node);
-
-            Repaint ();
-        }
-        private void OnNodeAddRequested (string nodeName, string _namespace) {
-            nodeEditorPanel.AddNode (nodeName, _namespace);
-        }
-
     }
 }

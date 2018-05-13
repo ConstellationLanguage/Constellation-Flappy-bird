@@ -1,6 +1,6 @@
+using System.Reflection;
 using Constellation;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,9 +9,9 @@ namespace ConstellationEditor {
         public ExampleSceneLoader () { }
 
         public void RunExample (string name, ConstellationEditorDataService constellationEditorDataService) {
-            var newScene = SceneManager.CreateScene ("Example");
+            SceneManager.CreateScene ("Example");
             UnloadAllScenesExcept ("Example");
-
+            ClearConsole ();
             GameObject light = new GameObject ("Light");
             light.AddComponent<Light> ().type = LightType.Directional;
 
@@ -27,16 +27,24 @@ namespace ConstellationEditor {
                 EditorApplication.isPlaying = false;
                 return;
             }
-            behaviour.ConstellationData = exampleConstellation;
+            behaviour.SetConstellationScript(exampleConstellation);
             Selection.activeGameObject = cube;
             cube.gameObject.SetActive (true);
 
             GameObject camera = new GameObject ("Camera");
             camera.transform.position = new Vector3 (0, 0, -10);
             camera.AddComponent<Camera> ();
-
         }
 
+        private void ClearConsole () {
+            var assembly = Assembly.GetAssembly (typeof (SceneView));
+            var type = assembly.GetType ("UnityEditor.LogEntries");
+            var method = type.GetMethod ("Clear");
+            method.Invoke (new object (), null);
+        }
+
+        //[AC] Not choice to use unload scene. I don't wnat it to be async
+#pragma warning disable 0618
         void UnloadAllScenesExcept (string sceneName) {
             int c = SceneManager.sceneCount;
             Scene[] scenesIdToRemove = new Scene[c - 1];
@@ -48,6 +56,7 @@ namespace ConstellationEditor {
             }
 
             foreach (var scene in scenesIdToRemove) {
+
                 SceneManager.UnloadScene (scene);
             }
         }
