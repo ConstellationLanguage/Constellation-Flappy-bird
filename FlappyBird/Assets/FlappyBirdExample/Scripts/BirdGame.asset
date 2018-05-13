@@ -137,6 +137,22 @@ MonoBehaviour:
           stringValue: UNDEFINED
           floatValue: 0
         Type: 0
+    - Name: KeyDown
+      Namespace: Unity
+      Guid: 8bdb48b5-2bc8-429a-afc2-46b3e663255c
+      XPosition: 159.5
+      YPosition: 167
+      Inputs: []
+      Outputs:
+      - Guid: acd14bac-e46f-45d7-96a9-b27d43b72b8d
+        IsWarm: 1
+        Type: 
+        Description: 1 on key down else 0
+      AttributesData:
+      - Value:
+          stringValue: w
+          floatValue: 0.000001
+        Type: 1
     - Name: Var
       Namespace: BasicNodes
       Guid: f80f6b45-8472-495b-9677-b9d1eeaf17ae
@@ -161,22 +177,6 @@ MonoBehaviour:
           stringValue: UNDEFINED
           floatValue: 0
         Type: 6
-    - Name: KeyDown
-      Namespace: Unity
-      Guid: 8bdb48b5-2bc8-429a-afc2-46b3e663255c
-      XPosition: 153.5
-      YPosition: 188
-      Inputs: []
-      Outputs:
-      - Guid: acd14bac-e46f-45d7-96a9-b27d43b72b8d
-        IsWarm: 1
-        Type: 
-        Description: 1 on key down else 0
-      AttributesData:
-      - Value:
-          stringValue: w
-          floatValue: 0.000001
-        Type: 1
     - Name: Switch
       Namespace: BasicNodes
       Guid: 32d87665-f535-43e6-9e61-b2e676da7bd3
@@ -197,6 +197,22 @@ MonoBehaviour:
         Type: 
         Description: Output if on
       AttributesData: []
+    - Name: MouseButtonDown
+      Namespace: Unity
+      Guid: b20c0758-c93f-4a95-b3cb-0d53dc6bc145
+      XPosition: 156.5
+      YPosition: 213
+      Inputs: []
+      Outputs:
+      - Guid: 2862c02d-7ca0-4a47-bebf-53f8f6afce43
+        IsWarm: 1
+        Type: 
+        Description: 1 on mouse button down else 0
+      AttributesData:
+      - Value:
+          stringValue: UNDEFINED
+          floatValue: 0
+        Type: 0
     - Name: LoadScene
       Namespace: Unity
       Guid: 2b9ca277-1d38-44d0-9010-49d50595384e
@@ -222,7 +238,7 @@ MonoBehaviour:
         Description: The Word
       AttributesData:
       - Value:
-          stringValue: FlappyBird
+          stringValue: FlappyBirdMenu
           floatValue: 0.000001
         Type: 1
     - Name: Note
@@ -361,6 +377,17 @@ MonoBehaviour:
         Type: 
         Description: 1 = on, 0 = off
       Output:
+        Guid: 2862c02d-7ca0-4a47-bebf-53f8f6afce43
+        IsWarm: 1
+        Type: 
+        Description: 1 on mouse button down else 0
+      outputPositionY: 222
+    - Input:
+        Guid: efb80950-0634-41d3-b1b5-9b80b4f7d072
+        IsWarm: 0
+        Type: 
+        Description: 1 = on, 0 = off
+      Output:
         Guid: acd14bac-e46f-45d7-96a9-b27d43b72b8d
         IsWarm: 1
         Type: 
@@ -377,6 +404,17 @@ MonoBehaviour:
         Type: 
         Description: Output if on
       outputPositionY: 234
+    - Input:
+        Guid: 95330cd3-ee58-41e4-998b-d65f903984e6
+        IsWarm: 1
+        Type: 
+        Description: Value to send
+      Output:
+        Guid: 2862c02d-7ca0-4a47-bebf-53f8f6afce43
+        IsWarm: 1
+        Type: 
+        Description: 1 on mouse button down else 0
+      outputPositionY: 242
     - Input:
         Guid: 95330cd3-ee58-41e4-998b-d65f903984e6
         IsWarm: 1
@@ -421,3 +459,5 @@ MonoBehaviour:
         Type: 
         Description: Received Value from a sender
       outputPositionY: 339
+  IsInstance: 0
+  IsDifferentThanSource: 0

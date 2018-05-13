@@ -796,8 +796,8 @@ MonoBehaviour:
     - Name: KeyDown
       Namespace: Unity
       Guid: 0715c66d-a3eb-4df6-b727-602b2481f752
-      XPosition: 144.5
-      YPosition: 515.5
+      XPosition: 150.5
+      YPosition: 501.5
       Inputs: []
       Outputs:
       - Guid: 69d23a3b-65a0-4548-bbdd-091148c157c3
@@ -828,8 +828,8 @@ MonoBehaviour:
     - Name: MouseButtonDown
       Namespace: Unity
       Guid: bba5761d-7919-435a-9568-579f36d2b8cf
-      XPosition: 142.5
-      YPosition: 588.5
+      XPosition: 138.5
+      YPosition: 563.5
       Inputs: []
       Outputs:
       - Guid: d317cef7-792c-4b69-add4-ee70ebacb415
@@ -841,26 +841,6 @@ MonoBehaviour:
           stringValue: UNDEFINED
           floatValue: 0
         Type: 0
-    - Name: Switch
-      Namespace: BasicNodes
-      Guid: 331fc2ab-b4e9-4f2f-8cee-9288debc7f24
-      XPosition: 314.5
-      YPosition: 594
-      Inputs:
-      - Guid: 1221fab4-4ddb-4c7a-b19d-b7a590f940ce
-        IsWarm: 0
-        Type: 
-        Description: 1 = on, 0 = off
-      - Guid: 752231b9-675a-4b99-b160-fd47010dd0c1
-        IsWarm: 1
-        Type: 
-        Description: Value to send
-      Outputs:
-      - Guid: 5cc123a9-2f88-445d-9ec7-14e9b4b56eaf
-        IsWarm: 0
-        Type: 
-        Description: Output if on
-      AttributesData: []
     - Name: Note
       Namespace: BasicNodes
       Guid: 413a8507-33ec-467c-911d-34491c89e53c
@@ -1141,17 +1121,6 @@ MonoBehaviour:
         Description: Y
       outputPositionY: 195.5
     - Input:
-        Guid: 71781056-17e5-4bf3-bc02-a605b4a935e2
-        IsWarm: 1
-        Type: 
-        Description: Z
-      Output:
-        Guid: 10079d9c-73a8-4452-9099-45882d4a2bdf
-        IsWarm: 0
-        Type: 
-        Description: Z
-      outputPositionY: 215.5
-    - Input:
         Guid: 79424917-f90c-42fb-80f7-7d5880303e4a
         IsWarm: 0
         Type: 
@@ -1322,17 +1291,6 @@ MonoBehaviour:
         Type: 
         Description: Value to multiply
       Output:
-        Guid: 5cc123a9-2f88-445d-9ec7-14e9b4b56eaf
-        IsWarm: 0
-        Type: 
-        Description: Output if on
-      outputPositionY: 495.5
-    - Input:
-        Guid: 16e60bcd-13f9-4663-b5fa-d7556f0d7985
-        IsWarm: 1
-        Type: 
-        Description: Value to multiply
-      Output:
         Guid: 4afd4b57-dfe1-445d-b65b-e44f030890dc
         IsWarm: 0
         Type: 
@@ -1344,11 +1302,33 @@ MonoBehaviour:
         Type: 
         Description: 1 = on, 0 = off
       Output:
+        Guid: d317cef7-792c-4b69-add4-ee70ebacb415
+        IsWarm: 1
+        Type: 
+        Description: 1 on mouse button down else 0
+      outputPositionY: 531
+    - Input:
+        Guid: 70942eb0-d657-431e-ae10-5fce93c4c621
+        IsWarm: 0
+        Type: 
+        Description: 1 = on, 0 = off
+      Output:
         Guid: 69d23a3b-65a0-4548-bbdd-091148c157c3
         IsWarm: 1
         Type: 
         Description: 1 on key down else 0
       outputPositionY: 531
+    - Input:
+        Guid: 97d63c9c-2c71-4195-9eb5-960f86fc9a6f
+        IsWarm: 1
+        Type: 
+        Description: Value to send
+      Output:
+        Guid: d317cef7-792c-4b69-add4-ee70ebacb415
+        IsWarm: 1
+        Type: 
+        Description: 1 on mouse button down else 0
+      outputPositionY: 551
     - Input:
         Guid: 97d63c9c-2c71-4195-9eb5-960f86fc9a6f
         IsWarm: 1
@@ -1371,28 +1351,6 @@ MonoBehaviour:
         Type: 
         Description: Output if on
       outputPositionY: 603
-    - Input:
-        Guid: 1221fab4-4ddb-4c7a-b19d-b7a590f940ce
-        IsWarm: 0
-        Type: 
-        Description: 1 = on, 0 = off
-      Output:
-        Guid: d317cef7-792c-4b69-add4-ee70ebacb415
-        IsWarm: 1
-        Type: 
-        Description: 1 on mouse button down else 0
-      outputPositionY: 624
-    - Input:
-        Guid: 752231b9-675a-4b99-b160-fd47010dd0c1
-        IsWarm: 1
-        Type: 
-        Description: Value to send
-      Output:
-        Guid: d317cef7-792c-4b69-add4-ee70ebacb415
-        IsWarm: 1
-        Type: 
-        Description: 1 on mouse button down else 0
-      outputPositionY: 644
     - Input:
         Guid: 29c847b5-f7b2-4ffc-a3f9-4246e041e455
         IsWarm: 1
