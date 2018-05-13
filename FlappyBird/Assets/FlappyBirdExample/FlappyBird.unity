@@ -174,14 +174,14 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 568652560}
-  m_RootOrder: 7
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &109063629
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 992428623}
+    m_TransformParent: {fileID: 568652560}
     m_Modifications:
     - target: {fileID: 4484769632424282, guid: cfaec4d895ab2f44780d4c35f2615a54, type: 2}
       propertyPath: m_LocalPosition.x
@@ -213,7 +213,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4484769632424282, guid: cfaec4d895ab2f44780d4c35f2615a54, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1753376550510248, guid: cfaec4d895ab2f44780d4c35f2615a54, type: 2}
       propertyPath: m_Name
@@ -543,6 +543,8 @@ Transform:
   - {fileID: 733773442}
   - {fileID: 1752882880}
   - {fileID: 1697894671}
+  - {fileID: 966133317}
+  - {fileID: 1946887362}
   - {fileID: 992428623}
   - {fileID: 1805844817}
   - {fileID: 85381320}
@@ -762,46 +764,18 @@ Transform:
   m_PrefabParentObject: {fileID: 4484769632424282, guid: cfaec4d895ab2f44780d4c35f2615a54,
     type: 2}
   m_PrefabInternal: {fileID: 1025264972}
---- !u!1 &992428621
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 992428623}
-  - component: {fileID: 992428622}
-  m_Layer: 0
-  m_Name: Map
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &992428622
+--- !u!114 &966133318
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 992428621}
+  m_GameObject: {fileID: 966133316}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c45173c581fdba8419e9a3e9415aa7a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Attributes:
-  - Variable:
-      stringValue: UNDEFINED
-      floatValue: 0.000001
-    Name: Chunk1
-    UnityObject: {fileID: 966133316}
-    AttributeType: 2
-  - Variable:
-      stringValue: UNDEFINED
-      floatValue: 0.000001
-    Name: Chunk2
-    UnityObject: {fileID: 1946887361}
-    AttributeType: 2
   - Variable:
       stringValue: UNDEFINED
       floatValue: 0.000001
@@ -814,6 +788,21 @@ MonoBehaviour:
     Namespace: 
     Guid: 
     Links: []
+--- !u!1 &992428621
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 992428623}
+  m_Layer: 0
+  m_Name: Map
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &992428623
 Transform:
   m_ObjectHideFlags: 0
@@ -823,18 +812,16 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 966133317}
-  - {fileID: 1946887362}
+  m_Children: []
   m_Father: {fileID: 568652560}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1025264972
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 992428623}
+    m_TransformParent: {fileID: 568652560}
     m_Modifications:
     - target: {fileID: 4484769632424282, guid: cfaec4d895ab2f44780d4c35f2615a54, type: 2}
       propertyPath: m_LocalPosition.x
@@ -866,7 +853,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4484769632424282, guid: cfaec4d895ab2f44780d4c35f2615a54, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1753376550510248, guid: cfaec4d895ab2f44780d4c35f2615a54, type: 2}
       propertyPath: m_Name
@@ -1441,7 +1428,7 @@ RectTransform:
   - {fileID: 1819565204}
   - {fileID: 1442647449}
   m_Father: {fileID: 568652560}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1569,3 +1556,27 @@ Transform:
   m_PrefabParentObject: {fileID: 4484769632424282, guid: cfaec4d895ab2f44780d4c35f2615a54,
     type: 2}
   m_PrefabInternal: {fileID: 109063629}
+--- !u!114 &1946887363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1946887361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45173c581fdba8419e9a3e9415aa7a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Attributes:
+  - Variable:
+      stringValue: UNDEFINED
+      floatValue: 0.000001
+    Name: Bird
+    UnityObject: {fileID: 733773437}
+    AttributeType: 2
+  ConstellationData: {fileID: 11400000, guid: 22cb57996459be543907fc71c82c363e, type: 2}
+  Constellation:
+    Name: 
+    Namespace: 
+    Guid: 
+    Links: []
