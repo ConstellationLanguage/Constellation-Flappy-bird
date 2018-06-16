@@ -238,7 +238,7 @@ MonoBehaviour:
         Description: The Word
       AttributesData:
       - Value:
-          stringValue: FlappyBirdMenu
+          stringValue: FlappyBird
           floatValue: 0.000001
         Type: 1
     - Name: Note
